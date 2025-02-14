@@ -10,7 +10,7 @@ readAPIKey = cnfg.read_api_key;
 
 %% Read Data %%
 
-ndays = 3; %odczyt z n ostatnich dni
+ndays = 30; %odczyt z n ostatnich dni
 [data] = thingSpeakRead(readChannelID, 'Fields', [field_latitude, field_longtitude], ...
             'NumDays', ndays, 'OutputFormat', 'timetable', 'ReadKey', readAPIKey);
 
@@ -37,57 +37,16 @@ Lon = grid_min_lon:step:grid_max_lon;
 % Utworzenie siatki
 [LonMatrix, LatMatrix] = meshgrid(Lon, Lat);
 
-%na razie probne liczby
-values = rand(numel(Lat) * numel(Lon),1);
-% wrzucmy wartosci do macierzy
-ValuesMatrix = reshape(values(:), numel(Lat), numel(Lon));
+%na razie probne liczby do macierzy
+ValuesMatrix = rand(numel(Lat), numel(Lon));
 %wyswietlmy losowe wartosci
 figure()
-%tiledlayout(1,2)
-%nexttile
-%h = geodensityplot(LatMatrix(:), LonMatrix(:), ValuesMatrix(:), 'Radius', 100);
-%nexttile
-h = geodensityplot(LatMatrix(:), LonMatrix(:), ValuesMatrix(:), 'Radius', 100, 'FaceColor','interp');
-
-% teraz trzeba zliczyc punkty w danym zakresie
-
-%{
-%rozdzielczość siatki
-res = 0.01; %ta wartości obliczone dla Warszawy - czesc dziesietna stopnia odpowiadajaca 1 km
-meters_res = 50; %chcę mieć 50 m
-grid_res_lat = ((max_lat - min_lat)/res)*1000/50;
-grid_res_lon = ((max_lon - min_lon)/res)*1000/50;
-
-% Utworzenie siatki
-vect_lat = linspace(min_lat, max_lat, grid_res_lat); %utworzenie wektora dla szerokosci
-vect_lon = linspace(min_lon, max_lon, grid_res_lon); %utworzenie wektora dla długości
-[grid_lon, grid_lat] = meshgrid(vect_lon, vect_lat); %utworzenie siatki
-
-% policzenie punktów w danej komórce siatki
-num_points = hist3([data.Longitude, data.Latitude], 'Edges', {vect_lon, vect_lat}); %tutaj automatycznie kwadrat 10x10
-%% Visualize Data %%
-
-plot(data.Longitude, data.Latitude, 'o');
-xlabel('Longitude');
-ylabel('Latitude');
-title('Geographical Data from ThingSpeak');
-hold on
-%wyswietlenie siatki
-plot(grid_lon, grid_lat, 'k');
+tiledlayout(1, 2);
+nexttile
+plot(LonMatrix, LatMatrix, 'k'); %wyswietlenie siatki
 hold on;
-plot(grid_lon', grid_lat', 'k');
-%heatmapa
-figure;
-imagesc(grid_lon(1,:), grid_lat(:,1), num_points');
-axis xy;
-colorbar;
-hold on;
-plot(grid_lon, grid_lat, 'k');
-hold on;
-plot(grid_lon', grid_lat', 'k');
+plot(LonMatrix', LatMatrix', 'k');
+nexttile
+geodensityplot(LatMatrix(:), LonMatrix(:), ValuesMatrix(:), 'Radius', 50, 'FaceColor','interp');
 
-
-data.Value = ones(height(data), 1);
-[LatMatix, LonMatrix] = ndgrid(data.Latitude, data.Longitude);
-%}
 
