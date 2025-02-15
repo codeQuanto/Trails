@@ -37,8 +37,34 @@ Lon = grid_min_lon:step:grid_max_lon;
 % Utworzenie siatki
 [LonMatrix, LatMatrix] = meshgrid(Lon, Lat);
 
-%na razie probne liczby do macierzy
-ValuesMatrix = rand(numel(Lat), numel(Lon));
+% counting the values in specified bins
+N = histcounts2(data.Latitude, data.Longitude, LatMatrix(:,1), LonMatrix(1,:)); %no need to upside down the LatMatrix like in the matrix_test.m
+
+%% Display values on mesh %%
+
+% define center points of the top-left (0) and bottom-right (1) mesh cells
+x0 = LonMatrix(1,1) + step/2;
+y0 = LatMatrix(size(LatMatrix,1), 1) - step/2;
+x1 = LonMatrix(1, size(LonMatrix,2)) - step/2;
+y1 = LatMatrix(1,1) + step/2;
+
+% Define the limits for x and y axes
+xlim([LonMatrix(1, 1), LonMatrix(1, end)]); % Oś X: od pierwszej do ostatniej wartości w pierwszym wierszu LonMatrix
+ylim([LatMatrix(1, 1), LatMatrix(end, 1)]);
+
+imagesc([x0, y0], [x1, y1], N); % proper location of pixels
+set(gca, 'YDir', 'normal'); %set the proper direction of y-axis (imagesc uses the opposite direction)
+colorbar;
+
+hold on
+%plot the mesh
+plot(LonMatrix', LatMatrix', 'k'); %horizontal lines
+hold on 
+plot(LonMatrix,LatMatrix, 'k'); %vertical lines
+
+
+% Old version of displaying
+%{
 %wyswietlmy losowe wartosci
 figure()
 tiledlayout(1, 2);
@@ -48,5 +74,6 @@ hold on;
 plot(LonMatrix', LatMatrix', 'k'); %linie poziome
 nexttile
 geodensityplot(LatMatrix(:), LonMatrix(:), ValuesMatrix(:), 'Radius', 100, 'FaceColor','interp');
+%}
 
 
