@@ -43,9 +43,9 @@ ValuesMatrix = rand(numel(Lat), numel(Lon));
 figure()
 tiledlayout(1, 2);
 nexttile
-plot(LonMatrix, LatMatrix, 'k'); %wyswietlenie siatki
+plot(LonMatrix, LatMatrix, 'k'); %wyswietlenie siatki - linie pionowe
 hold on;
-plot(LonMatrix', LatMatrix', 'k');
+plot(LonMatrix', LatMatrix', 'k'); %linie poziome
 nexttile
 geodensityplot(LatMatrix(:), LonMatrix(:), ValuesMatrix(:), 'Radius', 50, 'FaceColor','interp');
 
