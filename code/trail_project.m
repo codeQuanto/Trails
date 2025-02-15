@@ -30,7 +30,7 @@ grid_min_lon = round(min_lon - 0.006, 2);
 
 % Utworzenie wektorów zawierajacych kolejne linie siatki
 res = 0.01; %ta wartości obliczone dla Warszawy - czesc dziesietna stopnia odpowiadajaca 1 km
-meters_res = 50; %chcę mieć 50 m
+meters_res = 100; %chcę mieć n metrow
 step = res * meters_res/1000;
 Lat = grid_min_lat:step:grid_max_lat;
 Lon = grid_min_lon:step:grid_max_lon;
@@ -47,6 +47,6 @@ plot(LonMatrix, LatMatrix, 'k'); %wyswietlenie siatki - linie pionowe
 hold on;
 plot(LonMatrix', LatMatrix', 'k'); %linie poziome
 nexttile
-geodensityplot(LatMatrix(:), LonMatrix(:), ValuesMatrix(:), 'Radius', 50, 'FaceColor','interp');
+geodensityplot(LatMatrix(:), LonMatrix(:), ValuesMatrix(:), 'Radius', 100, 'FaceColor','interp');
 
 
