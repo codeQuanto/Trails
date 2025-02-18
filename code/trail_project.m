@@ -39,6 +39,7 @@ Lon = grid_min_lon:step:grid_max_lon;
 
 % counting the values in specified bins
 N = histcounts2(data.Latitude, data.Longitude, LatMatrix(:,1), LonMatrix(1,:)); %no need to upside down the LatMatrix like in the matrix_test.m
+N = flipud(N); %matrix is upside donw - effect of the histcounts2 function
 
 % preparing data to displaying
 % to apply log scale data must be > 0
