@@ -46,7 +46,14 @@ N = flipud(N); %matrix is upside donw - effect of the histcounts2 function
 N = N + 1;
 N_log = log(N);
 
-%% Display values on mesh %%
+%preparing data to displaying as geodensity plot
+LatGeo = LatMatrix(1:end-1,1:end-1); %delete last column and row
+LatGeo  = LatGeo + step/2; %shift matrix
+LonGeo = LonMatrix(1:end-1,1:end-1); %delete last column and row
+LonGeo  = LonGeo + step/2; %shift matrix
+N_geo = flipud(N_log);
+
+%% Display values %%
 
 % define center points of the top-left (0) and bottom-right (1) mesh cells
 x0 = LonMatrix(1,1) + step/2;
@@ -55,27 +62,23 @@ x1 = LonMatrix(1, size(LonMatrix,2)) - step/2;
 y1 = LatMatrix(1,1) + step/2;
 
 % display values
+figure()
+tiledlayout(1,2);
+
+nexttile
 imagesc([x0, x1], [y0, y1], N_log); % proper location of pixels
 set(gca, 'YDir', 'normal'); %set the proper direction of y-axis (imagesc uses the opposite direction)
 colorbar;
+colormap turbo;
 hold on
 %plot the mesh
 plot(LonMatrix', LatMatrix', 'k'); %horizontal lines
 hold on 
 plot(LonMatrix,LatMatrix, 'k'); %vertical lines
 
+nexttile
+geodensityplot(LatGeo(:), LonGeo(:), N_geo(:), 'Radius', 200, 'FaceColor', 'interp');
 
-% Old version of displaying
-%{
-%wyswietlmy losowe wartosci
-figure()
-tiledlayout(1, 2);
-nexttile
-plot(LonMatrix, LatMatrix, 'k'); %wyswietlenie siatki - linie pionowe
-hold on;
-plot(LonMatrix', LatMatrix', 'k'); %linie poziome
-nexttile
-geodensityplot(LatMatrix(:), LonMatrix(:), ValuesMatrix(:), 'Radius', 100, 'FaceColor','interp');
-%}
+
 
 
