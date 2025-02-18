@@ -40,6 +40,11 @@ Lon = grid_min_lon:step:grid_max_lon;
 % counting the values in specified bins
 N = histcounts2(data.Latitude, data.Longitude, LatMatrix(:,1), LonMatrix(1,:)); %no need to upside down the LatMatrix like in the matrix_test.m
 
+% preparing data to displaying
+% to apply log scale data must be > 0
+N = N + 1;
+N_log = log(N);
+
 %% Display values on mesh %%
 
 % define center points of the top-left (0) and bottom-right (1) mesh cells
@@ -49,7 +54,7 @@ x1 = LonMatrix(1, size(LonMatrix,2)) - step/2;
 y1 = LatMatrix(1,1) + step/2;
 
 % display values
-imagesc([x0, x1], [y0, y1], N); % proper location of pixels
+imagesc([x0, x1], [y0, y1], N_log); % proper location of pixels
 set(gca, 'YDir', 'normal'); %set the proper direction of y-axis (imagesc uses the opposite direction)
 colorbar;
 hold on
