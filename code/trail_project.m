@@ -42,6 +42,10 @@ N = histcounts2(data.Latitude, data.Longitude, LatMatrix(:,1), LonMatrix(1,:)); 
 N = flipud(N); %matrix is upside donw - effect of the histcounts2 function
 
 % preparing data to displaying
+N_sharp = log(N);
+%smooth data
+N = smoothdata2(N, "gaussian", 4);
+
 % to apply log scale data must be > 0
 N = N + 1;
 N_log = log(N);
@@ -51,7 +55,8 @@ LatGeo = LatMatrix(1:end-1,1:end-1); %delete last column and row
 LatGeo  = LatGeo + step/2; %shift matrix
 LonGeo = LonMatrix(1:end-1,1:end-1); %delete last column and row
 LonGeo  = LonGeo + step/2; %shift matrix
-N_geo = flipud(N_log);
+N_geo_smooth = flipud(N_log);
+N_geo_sharp = flipud(N_sharp);
 
 %% Display values %%
 
@@ -63,7 +68,18 @@ y1 = LatMatrix(1,1) + step/2;
 
 % display values
 figure()
-tiledlayout(1,2);
+tiledlayout(2,2);
+
+nexttile
+imagesc([x0, x1], [y0, y1], N_sharp); % proper location of pixels
+set(gca, 'YDir', 'normal'); %set the proper direction of y-axis (imagesc uses the opposite direction)
+colorbar;
+colormap turbo;
+hold on
+%plot the mesh
+plot(LonMatrix', LatMatrix', 'k'); %horizontal lines
+hold on 
+plot(LonMatrix,LatMatrix, 'k'); %vertical lines
 
 nexttile
 imagesc([x0, x1], [y0, y1], N_log); % proper location of pixels
@@ -77,8 +93,7 @@ hold on
 plot(LonMatrix,LatMatrix, 'k'); %vertical lines
 
 nexttile
-geodensityplot(LatGeo(:), LonGeo(:), N_geo(:), 'Radius', 200, 'FaceColor', 'interp');
+geodensityplot(LatGeo(:), LonGeo(:), N_geo_sharp(:), 'Radius', 200, 'FaceColor', 'interp');
 
-
-
-
+nexttile
+geodensityplot(LatGeo(:), LonGeo(:), N_geo_smooth(:), 'Radius', 200, 'FaceColor', 'interp');
