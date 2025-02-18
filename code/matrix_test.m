@@ -23,7 +23,7 @@ x1 = lon(1, size(lon,2)) - step/2;
 y1 = lat(size(lat,1), 1) + step/2;
 
 % display values on mesh 
-imagesc([x0, y0], [x1, y1], N); % proper location of pixels
+imagesc([x0, x1], [y0, y1], N); % proper location of pixels
 set(gca, 'YDir', 'normal'); %set the proper direction of y-axis (imagesc uses the opposite direction)
 colorbar;
 hold on

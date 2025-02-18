@@ -48,14 +48,10 @@ y0 = LatMatrix(size(LatMatrix,1), 1) - step/2;
 x1 = LonMatrix(1, size(LonMatrix,2)) - step/2;
 y1 = LatMatrix(1,1) + step/2;
 
-% Define the limits for x and y axes
-xlim([LonMatrix(1, 1), LonMatrix(1, end)]); % Oś X: od pierwszej do ostatniej wartości w pierwszym wierszu LonMatrix
-ylim([LatMatrix(1, 1), LatMatrix(end, 1)]);
-
-imagesc([x0, y0], [x1, y1], N); % proper location of pixels
+% display values
+imagesc([x0, x1], [y0, y1], N); % proper location of pixels
 set(gca, 'YDir', 'normal'); %set the proper direction of y-axis (imagesc uses the opposite direction)
 colorbar;
-
 hold on
 %plot the mesh
 plot(LonMatrix', LatMatrix', 'k'); %horizontal lines
