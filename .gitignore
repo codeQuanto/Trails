@@ -1,3 +1,5 @@
 code/config.m
-docs/*
+docs/images/private_images/*
+docs/other
+*.docx
 *.asv
