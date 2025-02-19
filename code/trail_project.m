@@ -68,8 +68,10 @@ y1 = LatMatrix(1,1) + step/2;
 
 % display values
 figure()
-tiledlayout(2,2);
+tiledlayout(1,2);
 
+% plot with "sharp" values
+%{
 nexttile
 imagesc([x0, x1], [y0, y1], N_sharp); % proper location of pixels
 set(gca, 'YDir', 'normal'); %set the proper direction of y-axis (imagesc uses the opposite direction)
@@ -80,6 +82,7 @@ hold on
 plot(LonMatrix', LatMatrix', 'k'); %horizontal lines
 hold on 
 plot(LonMatrix,LatMatrix, 'k'); %vertical lines
+%}
 
 nexttile
 imagesc([x0, x1], [y0, y1], N_log); % proper location of pixels
@@ -93,7 +96,15 @@ hold on
 plot(LonMatrix,LatMatrix, 'k'); %vertical lines
 
 nexttile
+surf(LonGeo, LatGeo, N_geo_smooth, 'EdgeColor', 'none'); % 3D plot
+view(3); % Set 3D view
+
+%geodensityplots
+%{ 
+
+nexttile
 geodensityplot(LatGeo(:), LonGeo(:), N_geo_sharp(:), 'Radius', 200, 'FaceColor', 'interp');
 
 nexttile
 geodensityplot(LatGeo(:), LonGeo(:), N_geo_smooth(:), 'Radius', 200, 'FaceColor', 'interp');
+%}
