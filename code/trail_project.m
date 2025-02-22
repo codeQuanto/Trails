@@ -8,6 +8,10 @@ field_latitude = cnfg.latitude_fieldID;
 field_longtitude = cnfg.longtitude_fieldID;
 readAPIKey = cnfg.read_api_key;
 
+smooth_flag = 1; %if flag is set data on the plot is smooth 
+geo_flag = 0; %if flag is set geodensity subplot is created
+three_dim_flag = 1; %if flag is set 3D subplot is created
+
 %% Read Data %%
 
 ndays = 30; %odczyt z n ostatnich dni
@@ -42,21 +46,22 @@ N = histcounts2(data.Latitude, data.Longitude, LatMatrix(:,1), LonMatrix(1,:)); 
 N = flipud(N); %matrix is upside donw - effect of the histcounts2 function
 
 % preparing data to displaying
-N_sharp = log(N);
-%smooth data
-N = smoothdata2(N, "gaussian", 4);
-
-% to apply log scale data must be > 0
 N = N + 1;
 N_log = log(N);
 
+if smooth_flag == 1
+    N = smoothdata2(N, "gaussian", 4);
+    N_log = log(N);
+end
+
 %preparing data to displaying as geodensity plot
-LatGeo = LatMatrix(1:end-1,1:end-1); %delete last column and row
-LatGeo  = LatGeo + step/2; %shift matrix
-LonGeo = LonMatrix(1:end-1,1:end-1); %delete last column and row
-LonGeo  = LonGeo + step/2; %shift matrix
-N_geo_smooth = flipud(N_log);
-N_geo_sharp = flipud(N_sharp);
+if geo_flag == 1 || three_dim_flag == 1
+    LatGeo = LatMatrix(1:end-1,1:end-1); %delete last column and row
+    LatGeo  = LatGeo + step/2; %shift matrix
+    LonGeo = LonMatrix(1:end-1,1:end-1); %delete last column and row
+    LonGeo  = LonGeo + step/2; %shift matrix
+    N_geo_log = flipud(N_log);
+end
 
 %% Display values %%
 
@@ -68,21 +73,7 @@ y1 = LatMatrix(1,1) + step/2;
 
 % display values
 figure()
-tiledlayout(1,2);
-
-% plot with "sharp" values
-%{
-nexttile
-imagesc([x0, x1], [y0, y1], N_sharp); % proper location of pixels
-set(gca, 'YDir', 'normal'); %set the proper direction of y-axis (imagesc uses the opposite direction)
-colorbar;
-colormap turbo;
-hold on
-%plot the mesh
-plot(LonMatrix', LatMatrix', 'k'); %horizontal lines
-hold on 
-plot(LonMatrix,LatMatrix, 'k'); %vertical lines
-%}
+tiledlayout(1, 1 + geo_flag + three_dim_flag);
 
 nexttile
 imagesc([x0, x1], [y0, y1], N_log); % proper location of pixels
@@ -95,16 +86,13 @@ plot(LonMatrix', LatMatrix', 'k'); %horizontal lines
 hold on 
 plot(LonMatrix,LatMatrix, 'k'); %vertical lines
 
-nexttile
-surf(LonGeo, LatGeo, N_geo_smooth, 'EdgeColor', 'none'); % 3D plot
-view(3); % Set 3D view
+if geo_flag == 1
+    nexttile
+    geodensityplot(LatGeo(:), LonGeo(:), N_geo_log(:), 'Radius', 200, 'FaceColor', 'interp');
+end
 
-%geodensityplots
-%{ 
-
-nexttile
-geodensityplot(LatGeo(:), LonGeo(:), N_geo_sharp(:), 'Radius', 200, 'FaceColor', 'interp');
-
-nexttile
-geodensityplot(LatGeo(:), LonGeo(:), N_geo_smooth(:), 'Radius', 200, 'FaceColor', 'interp');
-%}
+if three_dim_flag == 1
+    nexttile
+    surf(LonGeo, LatGeo, N_geo_log, 'EdgeColor', 'none'); % 3D plot
+    view(3); % Set 3D view
+end
