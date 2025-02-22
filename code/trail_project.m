@@ -8,9 +8,11 @@ field_latitude = cnfg.latitude_fieldID;
 field_longtitude = cnfg.longtitude_fieldID;
 readAPIKey = cnfg.read_api_key;
 
-smooth_flag = 1; %if flag is set data on the plot is smooth 
-geo_flag = 0; %if flag is set geodensity subplot is created
-three_dim_flag = 1; %if flag is set 3D subplot is created
+smooth_flag = 0; %if flag is set data on the plot is smooth 
+geo_flag = 1; %if flag is set geodensity subplot is created
+three_dim_flag = 0; %if flag is set 3D subplot is created
+
+boundaries_flag = 1; %if flag is set user can specify the boundaries of the mesh
 
 %% Read Data %%
 
@@ -21,10 +23,17 @@ ndays = 30; %odczyt z n ostatnich dni
 %% Postproceed Data %%
 
 % Określenie maksymalnych wartości danych
-max_lat = max(data.Latitude);
-min_lat = min(data.Latitude);
-max_lon = max(data.Longitude);
-min_lon = min(data.Longitude);
+if boundaries_flag == 0
+    max_lat = max(data.Latitude);
+    min_lat = min(data.Latitude);
+    max_lon = max(data.Longitude);
+    min_lon = min(data.Longitude);
+else
+    max_lat = max(data.Latitude);
+    min_lat = 52.2;
+    max_lon = 21.052;
+    min_lon = 20.94;
+end
 
 % Określenie maksymalnych zakresów siatki
 grid_max_lat = round(max_lat + 0.005, 2); %zaokraglenie do 2 miejsc - zawsze w gore
