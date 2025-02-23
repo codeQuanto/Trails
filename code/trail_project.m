@@ -8,9 +8,9 @@ field_latitude = cnfg.latitude_fieldID;
 field_longtitude = cnfg.longtitude_fieldID;
 readAPIKey = cnfg.read_api_key;
 
-smooth_flag = 0; %if flag is set data on the plot is smooth 
-geo_flag = 1; %if flag is set geodensity subplot is created
-three_dim_flag = 0; %if flag is set 3D subplot is created
+smooth_flag = 1; %if flag is set data on the plot is smooth 
+geo_flag = 0; %if flag is set geodensity subplot is created
+three_dim_flag = 1; %if flag is set 3D subplot is created
 
 boundaries_flag = 1; %if flag is set user can specify the boundaries of the mesh
 
@@ -30,7 +30,7 @@ if boundaries_flag == 0
     min_lon = min(data.Longitude);
 else
     max_lat = max(data.Latitude);
-    min_lat = 52.2;
+    min_lat = 52.21;
     max_lon = 21.052;
     min_lon = 20.94;
 end
@@ -43,7 +43,7 @@ grid_min_lon = round(min_lon - 0.006, 2);
 
 % Utworzenie wektorów zawierajacych kolejne linie siatki
 res = 0.01; %ta wartości obliczone dla Warszawy - czesc dziesietna stopnia odpowiadajaca 1 km
-meters_res = 100; %chcę mieć n metrow
+meters_res = 50; %chcę mieć n metrow
 step = res * meters_res/1000;
 Lat = grid_min_lat:step:grid_max_lat;
 Lon = grid_min_lon:step:grid_max_lon;
@@ -54,14 +54,14 @@ Lon = grid_min_lon:step:grid_max_lon;
 N = histcounts2(data.Latitude, data.Longitude, LatMatrix(:,1), LonMatrix(1,:)); %no need to upside down the LatMatrix like in the matrix_test.m
 N = flipud(N); %matrix is upside donw - effect of the histcounts2 function
 
+if smooth_flag == 1
+    N = smoothdata2(N, "gaussian", 10);
+end
+
 % preparing data to displaying
 N = N + 1;
 N_log = log(N);
-
-if smooth_flag == 1
-    N = smoothdata2(N, "gaussian", 4);
-    N_log = log(N);
-end
+N_log = sqrt(N_log);
 
 %preparing data to displaying as geodensity plot
 if geo_flag == 1 || three_dim_flag == 1
